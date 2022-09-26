@@ -1,22 +1,18 @@
-import { Routes, Route } from 'react-router-dom';
-import { HomeView, LoginView, RegisterView } from './views';
+import { Routes, Route } from "react-router-dom";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-import { AuthProvider } from './context/authContext';
-
-import './App.css';
+import { HomeView, ListView } from "./views";
+import "./App.css";
 
 const App = () => {
-  return (
-    <div className='h-screen flex'>
-      <AuthProvider>
+    return (
         <Routes>
-          <Route path='/' element={<HomeView />} />
-          <Route path='/login' element={<LoginView />} />
-          <Route path='/register' element={<RegisterView />} />
+            <Route path="/" element={<HomeView />} />
+            <Route path="/list" element={<ListView />} />
         </Routes>
-      </AuthProvider>
-    </div>
-  );
+    );
 };
 
-export default App;
+export default withAuthenticationRequired(App, {
+    onRedirecting: () => <>Loading...</>,
+});

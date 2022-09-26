@@ -1,3 +1,5 @@
+import { Navbar } from "../components/navbar";
+
 export const HomeView = () => {
-  return <div>HomeView</div>;
+    return <Navbar />;
 };
