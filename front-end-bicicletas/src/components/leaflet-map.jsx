@@ -31,6 +31,7 @@ export const LeafletMap = ({ children, height, width }) => {
             style={{
                 height: String(height) ?? "200px",
                 width: String(width) ?? "100%",
+                zIndex: 0,
             }}
         >
             <TileLayer

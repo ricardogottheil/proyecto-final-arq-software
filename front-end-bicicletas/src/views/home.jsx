@@ -1,5 +1,5 @@
+import { BicycleMarker } from "../components/bicycle-marker";
 import { LeafletMap } from "../components/leaflet-map";
-// import { Marker, Popup } from "react-leaflet";
 
 export const HomeView = () => {
     return (
@@ -10,6 +10,9 @@ export const HomeView = () => {
                         A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup>
                 </Marker> */}
+                <BicycleMarker
+                    position={[6.1772364138168525, -75.59085637799701]}
+                />
             </LeafletMap>
         </div>
     );
