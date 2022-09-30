@@ -1,0 +1,25 @@
+FROM node:16-alpine
+
+WORKDIR /api
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+ARG DEFAULT_PORT=5001
+
+ARG DEFAULT_RABBITMQ_URI=amqp://localhost:5672
+
+ARG DEFAULT_MONGODB_URI=mongodb://localhost:27017
+
+ENV PORT $DEFAULT_PORT
+
+ENV RABBITMQ_URI $DEFAULT_RABBITMQ_URI
+
+ENV MONGODB_URI $DEFAULT_MONGODB_URI
+
+EXPOSE $PORT
+
+CMD ["npm", "start"]
