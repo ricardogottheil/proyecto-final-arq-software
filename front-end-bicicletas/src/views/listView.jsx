@@ -1,180 +1,115 @@
-import React from "react";
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-const BicycleModalCreateButton = () => {
-    return (
-        <>
-            <label
-                htmlFor="bicycle-modal-create-button"
-                className="btn modal-button"
-            >
-                Añadir bicicleta
-            </label>
-            <input
-                type="checkbox"
-                id="bicycle-modal-create-button"
-                className="modal-toggle"
-            />
-            <div className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg pb-2">Añadir bicicleta</h3>
-                    <hr />
-                    <form className="flex flex-col">
-                        <div className="py-2 flex flex-col">
-                            <label
-                                htmlFor="bicycle-color"
-                                className="font-bold mb-1"
-                            >
-                                Color:
-                            </label>
-                            <select
-                                name="color"
-                                id="bicycle-color"
-                                className="select select-bordered w-full"
-                            >
-                                <option disabled selected>
-                                    Seleccione un color
-                                </option>
+import { BicycleModalCreate } from '../components/bicycleModalCreate';
+import { BicycleModalUpdate } from '../components/bicycleModalUpdate';
 
-                                <option>Blanco</option>
-                                <option>Negro</option>
-                                <option>Rojo</option>
-                                <option>Verde</option>
-                            </select>
-                        </div>
-
-                        <div className="py-2 flex flex-col">
-                            <label
-                                htmlFor="bicycle-model"
-                                className="font-bold mb-1"
-                            >
-                                Modelo:
-                            </label>
-                            <select
-                                name="modelo"
-                                id="bicycle-model"
-                                className="select select-bordered w-full"
-                            >
-                                <option disabled selected>
-                                    Seleccione un modelo
-                                </option>
-
-                                <option>Ruta</option>
-                                <option>Cross</option>
-                                <option>Montain</option>
-                                <option>Turismo</option>
-                            </select>
-                        </div>
-
-                        <div className="py-2 flex flex-col">
-                            <label
-                                htmlFor="bicycle-lat"
-                                className="font-bold mb-1"
-                            >
-                                Latitud:
-                            </label>
-
-                            <input
-                                name="latitud"
-                                id="bicycle-lat"
-                                type="number"
-                                placeholder="0.000000"
-                                className="input input-bordered w-full"
-                            />
-                        </div>
-
-                        <div className="py-2 flex flex-col">
-                            <label
-                                htmlFor="bicycle-lon"
-                                className="font-bold mb-1"
-                            >
-                                Longitud:
-                            </label>
-
-                            <input
-                                name="longitud"
-                                id="bicycle-lon"
-                                type="number"
-                                placeholder="0.000000"
-                                className="input input-bordered w-full"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="btn btn-primary pt-2 pb-2 mt-2"
-                        >
-                            Añadir
-                        </button>
-                    </form>
-                    <div className="modal-action">
-                        <label
-                            htmlFor="bicycle-modal-create-button"
-                            className="btn"
-                        >
-                            Cerrar
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
-};
+import apiService from '../utils/apiService';
+import { useBicicletas } from '../utils/appContext';
 
 export const ListView = () => {
-    return (
-        <div className="px-10 py-5">
-            <div className="flex mb-6">
-                <BicycleModalCreateButton />
-            </div>
-            <div className="overflow-x-auto">
-                <table className="table table-zebra w-full">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Color</th>
-                            <th>Modelo</th>
-                            <th>Ubicacion</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>Blanco</td>
-                            <td>Ruta</td>
-                            <td>101,101</td>
-                            <td className="flex center">
-                                <button className="btn btn-sm btn-primary mr-2">
-                                    Mostrar
-                                </button>
-                                <button className="btn btn-sm btn-secondary mr-2">
-                                    Editar
-                                </button>
-                                <button className="btn btn-sm btn-third">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
+  const MySwal = withReactContent(Swal);
+  const { bicicletas, setBicicletas } = useBicicletas();
 
-                        <tr>
-                            <th>2</th>
-                            <td>Negro</td>
-                            <td>Ruta</td>
-                            <td>6.167689,-75.595522</td>
-                            <td className="flex center">
-                                <button className="btn btn-sm btn-primary mr-2">
-                                    Mostrar
-                                </button>
-                                <button className="btn btn-sm btn-secondary mr-2">
-                                    Editar
-                                </button>
-                                <button className="btn btn-sm btn-third">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  const getBicycles = async () => {
+    const data = await apiService.obtenerBicicletas();
+    if (data.ok === true) {
+      setBicicletas(data.bicicletas);
+    }
+  };
+
+  const eliminarBicicleta = async (bicicleta) => {
+    if (!bicicleta) return;
+
+    const bicicletaEliminar = {
+      color: bicicleta.color,
+      modelo: bicicleta.modelo,
+      ubicacion: [bicicleta.latitud, bicicleta.longitud],
+      id: bicicleta._id,
+      accion: 'eliminar',
+    };
+
+    const data = await apiService.accionBicicleta(bicicletaEliminar);
+    if (data.ok === true) {
+      toast.success('Bicicleta eliminada con éxito');
+      getBicycles();
+    } else {
+      toast.error('No se pudo eliminar la bicicleta');
+    }
+  };
+
+  useEffect(() => {
+    getBicycles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const openModalCreate = () => {
+    MySwal.fire({
+      title: <p className='font-bold text-lg pb-2'>Añadir bicicleta</p>,
+      html: <BicycleModalCreate />,
+      showConfirmButton: false,
+      showCloseButton: true,
+      allowOutsideClick: false,
+    });
+  };
+
+  const openModalUpdate = (bicicleta) => {
+    MySwal.fire({
+      title: <p className='font-bold text-lg pb-2'>Actualizar bicicleta</p>,
+      html: <BicycleModalUpdate bicicletaData={bicicleta} />,
+      showConfirmButton: false,
+      showCloseButton: true,
+      allowOutsideClick: false,
+    });
+  };
+
+  return (
+    <div className='px-10 py-5'>
+      <div className='flex mb-6'>
+        <button className='btn' onClick={openModalCreate}>
+          Añadir bicicleta
+        </button>
+        <button className='btn ml-2' onClick={getBicycles}>
+          Recargar
+        </button>
+      </div>
+      <div className='overflow-x-auto'>
+        <table className='table table-zebra w-full'>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Color</th>
+              <th>Modelo</th>
+              <th>Ubicacion</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bicicletas?.map((bicicleta) => (
+              <tr key={bicicleta?._id}>
+                <th>{bicicleta?._id}</th>
+                <td>{bicicleta?.color}</td>
+                <td>{bicicleta?.modelo}</td>
+                <td>{`${bicicleta?.ubicacion[0]}, ${bicicleta?.ubicacion[1]}`}</td>
+                <td className='flex center'>
+                  <button
+                    className='btn btn-sm btn-primary mr-2'
+                    onClick={() => openModalUpdate(bicicleta)}>
+                    Actualizar
+                  </button>
+                  <button
+                    className='btn btn-sm btn-third'
+                    onClick={() => eliminarBicicleta(bicicleta)}>
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };

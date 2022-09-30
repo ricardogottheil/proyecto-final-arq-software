@@ -1,30 +1,27 @@
-import { Routes, Route } from "react-router-dom";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
+import { Routes, Route } from 'react-router-dom';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { BicicletasProvider } from './utils/appContext';
 
-//HOOKS
-import AppContext from "./utils/appContext";
-import useInitialState from "./hooks/useInitialState";
+import { HomeView, ListView } from './views';
+import { Layout } from './components/layout';
+import { Toaster } from 'react-hot-toast';
 
-import { HomeView, ListView } from "./views";
-import { Layout } from "./components/layout";
-
-import "./App.css";
+import './App.css';
 
 const App = () => {
-    const initialState = useInitialState();
-
-    return (
-        <AppContext.Provider value={initialState}>
-            <Layout>
-                <Routes>
-                    <Route path="/" element={<HomeView />} />
-                    <Route path="/list" element={<ListView />} />
-                </Routes>
-            </Layout>
-        </AppContext.Provider>
-    );
+  return (
+    <BicicletasProvider>
+      <Layout>
+        <Toaster />
+        <Routes>
+          <Route path='/' element={<HomeView />} />
+          <Route path='/list' element={<ListView />} />
+        </Routes>
+      </Layout>
+    </BicicletasProvider>
+  );
 };
 
 export default withAuthenticationRequired(App, {
-    onRedirecting: () => <>Cargando...</>,
+  onRedirecting: () => <>Cargando...</>,
 });
