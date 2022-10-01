@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: bicicletasfront-v1
+    labels:
+        app: bicicletasfront
+        version: "1.0"
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: bicicletasfront
+    template:
+        metadata:
+            labels:
+                app: bicicletasfront
+                version: "1.0"
+        spec:
+            containers:
+                - name: bicicletasfront
+                  image: ricardogottheil/frontend-bicicletas:latest
+                  ports:
+                      - name: http-server
+                        containerPort: 3000
+                  env:
+                      - name: REACT_APP_API_URI
+                        value: "http://bicicletasapi:5000"

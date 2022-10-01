@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: bicicletasapi
+    labels:
+        app: bicicletasapi
+spec:
+    ports:
+        - port: 5001
+          targetPort: http-server
+          protocol: TCP
+          nodePort: 30001
+    selector:
+        app: bicicletasapi
+    type: LoadBalancer

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: bicicletasapi-v1
+    labels:
+        app: bicicletasapi
+        version: "1.0"
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: bicicletasapi
+    template:
+        metadata:
+            labels:
+                app: bicicletasapi
+                version: "1.0"
+        spec:
+            containers:
+                - name: bicicletasapi
+                  image: ricardogottheil/bicicletas-api:latest
+                  ports:
+                      - name: http-server
+                        containerPort: 5000
+                  env:
+                      - name: MONGODB_URI
+                        value: "mongodb+srv://bicicletas:iSa2IkBhC2MsMKbk@cluster0.jqt0b0w.mongodb.net/?retryWrites=true&w=majority"
+                      - name: RABBITMQ_URI
+                        value: "amqps://txubtzxt:vhv0LMQ9gDl1mokB0ed6UCCcHgazGxbE@shrimp.rmq.cloudamqp.com/txubtzxt"
