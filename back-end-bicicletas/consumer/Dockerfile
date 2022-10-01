@@ -8,9 +8,9 @@ RUN npm install
 
 COPY . .
 
-ARG DEFAULT_RABBITMQ_URI=amqp://localhost:5672
+ARG DEFAULT_RABBITMQ_URI="amqp://localhost:5672"
 
-ARG DEFAULT_MONGODB_URI=mongodb://localhost:27017
+ARG DEFAULT_MONGODB_URI="mongodb://localhost:27017"
 
 ENV DEFAULT_RABBITMQ_URI $DEFAULT_RABBITMQ_URI
 

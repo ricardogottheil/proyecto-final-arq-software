@@ -10,7 +10,7 @@ COPY . .
 
 ARG DEFAULT_PORT=3000
 
-ARG DEFAULT_URI=http://localhost:5001
+ARG DEFAULT_URI="http://localhost:5001"
 
 ENV PORT $DEFAULT_PORT
 
